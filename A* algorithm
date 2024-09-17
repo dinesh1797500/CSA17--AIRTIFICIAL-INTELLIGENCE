@@ -1,0 +1,13 @@
+A* works by combining two functions:
+
+g(n): The cost from the start node to the current node 
+𝑛
+n.
+h(n): A heuristic estimate of the cost from node 
+𝑛
+n to the goal node. This is also known as the heuristic function and is problem-specific.
+The algorithm aims to minimize the total cost function f(n), where:
+
+f(n)=g(n)+h(n)
+g(n) ensures that we consider the actual distance traveled.
+h(n) helps guide the algorithm toward the goal efficiently by estimating the remaining distance.
