@@ -1,0 +1,35 @@
+% Predicate to perform Best-First Search
+best_first_search(Start, Solution) :-
+    best_first([Start], [], Solution).
+
+% Main Best-First Search algorithm
+best_first([Node | _], _, Node) :- goal(Node), !.
+best_first([Node | Rest], Closed, Solution) :-
+    findall(Child, (successor(Node, Child), \+ member(Child, Closed)), Children),
+    evaluate_children(Children, EvaluatedChildren),
+    append(Rest, EvaluatedChildren, NewOpen),
+    sort(1, @=<, NewOpen, SortedOpen),
+    best_first(SortedOpen, [Node | Closed], Solution).
+
+% Successor predicate (defines neighbors or children)
+successor(State, NextState) :-
+    % Define how to generate the next states from the current state
+    % This is problem-specific
+    ...
+
+% Heuristic function
+heuristic(State, HeuristicValue) :-
+    % Define your heuristic here
+    % This is problem-specific
+    ...
+
+% Evaluate the heuristic of each child node
+evaluate_children([], []).
+evaluate_children([Child | Rest], [(HValue, Child) | EvaluatedRest]) :-
+    heuristic(Child, HValue),
+    evaluate_children(Rest, EvaluatedRest).
+
+% Goal predicate (defines the goal state)
+goal(State) :-
+    % Define the goal condition for the search
+    ...
