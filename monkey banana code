@@ -1,0 +1,4 @@
+% State representation: state(MonkeyPos, BoxPos, HasBanana)
+% MonkeyPos: where the monkey is (can be floor or on_box)
+% BoxPos: where the box is
+% HasBanana: true if the monkey has the banana, false otherwise
