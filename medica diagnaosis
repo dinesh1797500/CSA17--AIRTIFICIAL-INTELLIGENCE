@@ -1,0 +1,64 @@
+% Predicate to perform Best-First Search for medical diagnosis
+diagnose(Symptoms, Diagnosis) :-
+    best_first([(0, Symptoms)], [], Diagnosis).
+
+% Best-First Search algorithm for diagnosis
+best_first([(_, Diagnosis) | _], _, Diagnosis) :- 
+    disease(Diagnosis), !.
+
+best_first([(Score, Symptoms) | Rest], Closed, Diagnosis) :-
+    findall(NewSymptoms, (successor(Symptoms, NewSymptoms), \+ member(NewSymptoms, Closed)), NewSymptomSets),
+    evaluate_symptoms(NewSymptomSets, EvaluatedSymptomSets),
+    append(Rest, EvaluatedSymptomSets, NewOpen),
+    sort(1, @=<, NewOpen, SortedOpen),
+    best_first(SortedOpen, [Symptoms | Closed], Diagnosis).
+
+% Successor predicate (define new symptoms based on the current symptoms)
+successor(Symptoms, NewSymptoms) :-
+    possible_symptom(Symptom),
+    \+ member(Symptom, Symptoms),
+    append(Symptoms, [Symptom], NewSymptoms).
+
+% Heuristic function (calculate how well the symptoms match a disease)
+heuristic(Symptoms, Score) :-
+    disease(Disease),
+    expected_symptoms(Disease, ExpectedSymptoms),
+    count_matches(Symptoms, ExpectedSymptoms, Score).
+
+% Evaluate each symptom set
+evaluate_symptoms([], []).
+evaluate_symptoms([Symptoms | Rest], [(Score, Symptoms) | EvaluatedRest]) :-
+    heuristic(Symptoms, Score),
+    evaluate_symptoms(Rest, EvaluatedRest).
+
+% Goal predicate: A diagnosis is reached when the set of symptoms matches a disease
+disease(Diagnosis) :-
+    known_disease(Diagnosis).
+
+% Known diseases and their expected symptoms
+expected_symptoms(flu, [fever, cough, sore_throat, fatigue]).
+expected_symptoms(common_cold, [sneezing, runny_nose, sore_throat, cough]).
+expected_symptoms(covid_19, [fever, cough, difficulty_breathing, loss_of_smell]).
+expected_symptoms(asthma, [wheezing, shortness_of_breath, chest_tightness, coughing]).
+
+% Possible symptoms that can be observed
+possible_symptom(fever).
+possible_symptom(cough).
+possible_symptom(sore_throat).
+possible_symptom(fatigue).
+possible_symptom(sneezing).
+possible_symptom(runny_nose).
+possible_symptom(difficulty_breathing).
+possible_symptom(loss_of_smell).
+possible_symptom(wheezing).
+possible_symptom(shortness_of_breath).
+possible_symptom(chest_tightness).
+
+% Utility to count matching symptoms between observed and expected symptoms
+count_matches([], _, 0).
+count_matches([Symptom | Rest], ExpectedSymptoms, Count) :-
+    member(Symptom, ExpectedSymptoms),
+    count_matches(Rest, ExpectedSymptoms, SubCount),
+    Count is SubCount + 1.
+count_matches([_ | Rest], ExpectedSymptoms, Count) :-
+    count_matches(Rest, ExpectedSymptoms, Count).
