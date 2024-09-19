@@ -1,0 +1,24 @@
+Initialize:
+
+Start with an initial set of observed symptoms.
+Store this set in a priority queue (open list) with an initial score of 0.
+Evaluate Goal State:
+
+Check if the current set of symptoms matches a known disease (goal state).
+If it matches, return the diagnosis (disease).
+Generate Successors:
+
+If the current symptom set does not match a known disease, generate all possible next states (symptom sets) by adding a new symptom that hasn’t been observed yet.
+Evaluate Heuristic:
+
+For each new symptom set (successor), calculate the heuristic value. This value represents how many symptoms match the expected symptoms of a known disease.
+Sort Symptom Sets:
+
+Add the evaluated symptom sets to the priority queue (open list).
+Sort the queue based on the heuristic values (ascending order), so the best matching symptom set is processed next.
+Repeat:
+
+Pop the symptom set with the best heuristic value from the queue and repeat steps 2–5 until a diagnosis is found (goal state is reached).
+Return Diagnosis:
+
+Once the goal state is reached, return the corresponding disease as the diagnosis.
