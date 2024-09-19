@@ -1,0 +1,8 @@
+Extendibility:
+This system can be extended by:
+
+Adding more diseases and detailed dietary requirements.
+Incorporating more food items with their nutritional content.
+Including more user preferences like vegan, gluten-free, or low-carb options.
+Providing meal plans or recipes based on the recommended foods.
+This approach offers a personalized diet system tailored to an individual's health conditions and preferences using Prolog's logical reasoning capabilities.
