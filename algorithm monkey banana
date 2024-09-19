@@ -1,0 +1,18 @@
+State Representation:
+
+state(MonkeyPos, BoxPos, HasBanana) represents the current state.
+MonkeyPos represents the monkey's location, which can be a place on the floor (a, b, etc.) or on_box if the monkey is on top of the box.
+BoxPos represents the box's location.
+HasBanana is true if the monkey has grasped the banana, false otherwise.
+Move Actions:
+
+walk(MonkeyPos, NewPos): The monkey can walk from one position to another.
+push_box(MonkeyPos, NewPos): The monkey can push the box to a new location if it is at the same location as the box.
+climb_box: The monkey can climb onto the box if it is at the same position as the box.
+grasp_banana: If the monkey is on the box and has not grasped the banana, it can grasp the banana.
+Plan/2 Predicate:
+
+plan/3 recursively finds a sequence of moves that leads from the initial state to the goal state. It constructs the plan as a list of moves.
+solve/1 Predicate:
+
+solve/1 finds a sequence of moves (Solution) that will solve the problem by transitioning from the initial state to the goal state.
