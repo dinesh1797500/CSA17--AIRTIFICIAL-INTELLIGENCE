@@ -1,0 +1,50 @@
+% Disease profiles with dietary restrictions and recommended foods
+disease(diabetes, [avoid([sugar, soda, white_bread, sweets]), include([whole_grains, vegetables, lean_meats, nuts, low_glycemic_fruits])]).
+disease(hypertension, [avoid([salt, processed_foods, alcohol, fatty_meats]), include([fruits, vegetables, whole_grains, lean_proteins, low_fat_dairy])]).
+disease(heart_disease, [avoid([saturated_fats, trans_fats, red_meat, sugary_foods]), include([omega_3_fats, whole_grains, vegetables, lean_proteins, nuts])]).
+disease(celiac_disease, [avoid([gluten, wheat, barley, rye]), include([gluten_free_grains, fruits, vegetables, lean_meats])]).
+disease(obesity, [avoid([high_calorie_foods, sugary_drinks, fast_foods]), include([fiber_rich_foods, vegetables, lean_proteins, water, whole_grains])]).
+
+% Food items and their categories
+food(apple, [low_glycemic_fruit, fiber, vitamin_c]).
+food(broccoli, [vegetable, fiber, vitamin_c, low_calorie]).
+food(salmon, [lean_meat, omega_3_fats]).
+food(almonds, [nuts, fiber, healthy_fats]).
+food(whole_grain_bread, [whole_grains, fiber]).
+food(white_bread, [refined_grains, high_glycemic]).
+food(cake, [sweets, high_sugar]).
+food(chicken, [lean_protein, low_fat]).
+food(oatmeal, [whole_grains, fiber]).
+food(soda, [high_sugar]).
+food(pizza, [processed_food, high_calorie]).
+food(yogurt, [low_fat_dairy]).
+
+% User Profile: Current diseases and food preferences
+user_profile(john, [diabetes, hypertension], [allergic_to(almonds), prefers(vegetarian)]).
+
+% Recommending a diet based on diseases and user preferences
+recommend_diet(User, Diet) :-
+    user_profile(User, Diseases, Preferences),
+    findall(IncludeFoods, (member(Disease, Diseases), disease(Disease, [_, include(IncludeFoods)])), AllIncludeFoods),
+    findall(AvoidFoods, (member(Disease, Diseases), disease(Disease, [avoid(AvoidFoods), _])), AllAvoidFoods),
+    flatten(AllIncludeFoods, IncludeList),
+    flatten(AllAvoidFoods, AvoidList),
+    exclude_avoid(AvoidList, IncludeList, FilteredFoods),
+    apply_preferences(Preferences, FilteredFoods, Diet).
+
+% Filter out foods to avoid
+exclude_avoid(AvoidList, IncludeList, FilteredFoods) :-
+    exclude(memberchk_(AvoidList), IncludeList, FilteredFoods).
+
+memberchk_(List, X) :- member(X, List).
+
+% Apply user preferences such as allergies or vegetarian preference
+apply_preferences([], Diet, Diet).
+apply_preferences([allergic_to(Allergen) | RestPreferences], FoodList, FilteredFoods) :-
+    exclude(contains(Allergen), FoodList, FoodsWithoutAllergen),
+    apply_preferences(RestPreferences, FoodsWithoutAllergen, FilteredFoods).
+apply_preferences([prefers(vegetarian) | RestPreferences], FoodList, FilteredFoods) :-
+    exclude(contains(meat), FoodList, VegetarianFoods),
+    apply_preferences(RestPreferences, VegetarianFoods, FilteredFoods).
+
+% Check if a food contains an allergen or non-prefe
